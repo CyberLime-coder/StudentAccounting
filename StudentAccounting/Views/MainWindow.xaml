@@ -1,0 +1,59 @@
+﻿<Window x:Class="StudentAccounting.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Учёт студентов" Height="600" Width="1024" MinHeight="600" MinWidth="1024"
+        WindowStartupLocation="CenterScreen">
+    <TabControl>
+        <!-- Вкладка "Студенты" -->
+        <TabItem Header="Студенты">
+            <Grid Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <Button Content="Добавить" Command="{Binding AddStudentCommand}" Width="80" Margin="0,0,5,0"/>
+                    <Button Content="Редактировать" Command="{Binding EditStudentCommand}" Width="80" Margin="0,0,5,0"/>
+                    <Button Content="Удалить" Command="{Binding DeleteStudentCommand}" Width="80" Margin="0,0,5,0"/>
+                    <Button Content="Обновить" Command="{Binding RefreshStudentsCommand}" Width="80"/>
+                </StackPanel>
+                <DataGrid Grid.Row="1" ItemsSource="{Binding Students}" SelectedItem="{Binding SelectedStudent, UpdateSourceTrigger=PropertyChanged}"
+                          AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
+                        <DataGridTextColumn Header="ФИО" Binding="{Binding FullName}" Width="200"/>
+                        <DataGridTextColumn Header="Группа" Binding="{Binding Group}" Width="100"/>
+                        <DataGridTextColumn Header="Номер зачётной книжки" Binding="{Binding RecordBookNumber}" Width="120"/>
+                        <DataGridTextColumn Header="Средний балл" Binding="{Binding AverageScore}" Width="80"/>
+                        <DataGridTextColumn Header="Форма обучения" Binding="{Binding EducationForm}" Width="100"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </TabItem>
+        <!-- Вкладка "Дисциплины" -->
+        <TabItem Header="Дисциплины">
+            <Grid Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <Button Content="Добавить" Command="{Binding AddDisciplineCommand}" Width="80" Margin="0,0,5,0"/>
+                    <Button Content="Редактировать" Command="{Binding EditDisciplineCommand}" Width="80" Margin="0,0,5,0"/>
+                    <Button Content="Удалить" Command="{Binding DeleteDisciplineCommand}" Width="80" Margin="0,0,5,0"/>
+                    <Button Content="Обновить" Command="{Binding RefreshDisciplinesCommand}" Width="80"/>
+                </StackPanel>
+                <DataGrid Grid.Row="1" ItemsSource="{Binding Disciplines}" SelectedItem="{Binding SelectedDiscipline, UpdateSourceTrigger=PropertyChanged}"
+                          AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
+                        <DataGridTextColumn Header="Название дисциплины" Binding="{Binding Name}" Width="200"/>
+                        <DataGridTextColumn Header="Количество часов" Binding="{Binding Hours}" Width="100"/>
+                        <DataGridTextColumn Header="Семестр" Binding="{Binding Semester}" Width="80"/>
+                        <DataGridTextColumn Header="Преподаватель" Binding="{Binding Teacher}" Width="150"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </TabItem>
+    </TabControl>
+</Window>

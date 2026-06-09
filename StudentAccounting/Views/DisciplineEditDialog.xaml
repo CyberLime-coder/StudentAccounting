@@ -1,0 +1,32 @@
+﻿<Window x:Class="StudentAccounting.Views.DisciplineEditDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Дисциплина" Height="350" Width="400" MinHeight="350" MinWidth="400"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Label Content="Название дисциплины:" Grid.Row="0"/>
+        <TextBox Text="{Binding Discipline.Name, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Margin="0,0,0,10"/>
+        <Label Content="Количество часов (1-500):" Grid.Row="2"/>
+        <TextBox Text="{Binding Discipline.Hours, UpdateSourceTrigger=PropertyChanged}" Grid.Row="3" Margin="0,0,0,10"/>
+        <Label Content="Семестр (1-8):" Grid.Row="4"/>
+        <TextBox Text="{Binding Discipline.Semester, UpdateSourceTrigger=PropertyChanged}" Grid.Row="5" Margin="0,0,0,10"/>
+        <Label Content="Преподаватель:" Grid.Row="6"/>
+        <TextBox Text="{Binding Discipline.Teacher, UpdateSourceTrigger=PropertyChanged}" Grid.Row="7" Margin="0,0,0,10"/>
+        <TextBlock Text="{Binding ErrorMessage}" Foreground="Red" Grid.Row="8" Margin="0,5" TextWrapping="Wrap"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="9" Margin="0,10">
+            <Button Content="Сохранить" Command="{Binding SaveCommand}" Width="80" Margin="5" IsEnabled="{Binding IsSaveEnabled}"/>
+            <Button Content="Отмена" Command="{Binding CancelCommand}" Width="80" Margin="5"/>
+        </StackPanel>
+    </Grid>
+</Window>
