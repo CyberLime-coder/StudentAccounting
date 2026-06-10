@@ -5,26 +5,34 @@ using System.Text.RegularExpressions;
 
 namespace StudentAccounting.Models
 {
+    /// Модель студента. Содержит свойства и валидацию.
+    /// Реализует INotifyPropertyChanged для уведомлений об изменении свойств,
+    /// и ICloneable для клонирования (редактирование через копию).
     public class Student : INotifyPropertyChanged, ICloneable
     {
         private int _id;
-        private string _fullName = string.Empty;
-        private string _group = string.Empty;
-        private string _recordBookNumber = string.Empty;
+        private string _fullName = "";
+        private string _group = "";
+        private string _recordBookNumber = "";
         private double _averageScore;
         private string _educationForm = "Бюджет";
 
+        /// Уникальный идентификатор студента.
         public int Id
         {
             get => _id;
             set { _id = value; OnPropertyChanged(); }
         }
 
+        /// Полное имя студента (ФИО). Не может быть пустым.
         public string FullName
         {
             get => _fullName;
             set { _fullName = value; OnPropertyChanged(); }
         }
+
+        /// Группа в формате ББББ-ЧЧ-ЧЧ, например ИСП-21-01.
+        /// Заглавные русские буквы, дефисы, цифры.
 
         public string Group
         {
@@ -32,24 +40,31 @@ namespace StudentAccounting.Models
             set { _group = value; OnPropertyChanged(); }
         }
 
+        /// Номер зачётной книжки: ровно 8 цифр.
         public string RecordBookNumber
         {
             get => _recordBookNumber;
             set { _recordBookNumber = value; OnPropertyChanged(); }
         }
 
+        /// Средний балл от 2.0 до 5.0 (один знак после запятой).
         public double AverageScore
         {
             get => _averageScore;
             set { _averageScore = value; OnPropertyChanged(); }
         }
 
+        /// Форма обучения: "Бюджет" или "Контракт".
         public string EducationForm
         {
             get => _educationForm;
             set { _educationForm = value; OnPropertyChanged(); }
         }
 
+        /// Проверяет корректность всех полей студента.
+
+        /// "error" Текст ошибки, если валидация не пройдена.
+        /// true, если все поля корректны, иначе false.
         public bool IsValid(out string error)
         {
             if (string.IsNullOrWhiteSpace(FullName))
@@ -80,6 +95,8 @@ namespace StudentAccounting.Models
             error = string.Empty;
             return true;
         }
+
+        /// Создаёт поверхностную копию объекта (для редактирования в диалоге).
 
         public object Clone() => MemberwiseClone();
 
