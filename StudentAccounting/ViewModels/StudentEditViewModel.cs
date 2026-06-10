@@ -6,17 +6,20 @@ using StudentAccounting.Commands;
 
 namespace StudentAccounting.ViewModels
 {
+    /// ViewModel для диалога редактирования студента.
+    /// Содержит логику валидации, преобразование ввода среднего балла (замена запятой на точку),
+    /// команды "Сохранить" и "Отмена".
+
     public class StudentEditViewModel : BaseViewModel
     {
         private Student _student;
-        private string _errorMessage = string.Empty;
+        private string _errorMessage = "";
         private bool _isSaveEnabled;
         private string _averageScoreText = "";
 
         public StudentEditViewModel(Student student)
         {
             _student = student?.Clone() as Student ?? new Student();
-            // Инициализируем текстовое поле среднего балла
             if (_student.AverageScore > 0)
                 _averageScoreText = _student.AverageScore.ToString(System.Globalization.CultureInfo.InvariantCulture);
             SaveCommand = new RelayCommand(_ => Save(), _ => IsSaveEnabled);
@@ -24,24 +27,29 @@ namespace StudentAccounting.ViewModels
             Validate();
         }
 
+        /// Редактируемый студент.
         public Student Student
         {
             get => _student;
             set { _student = value; OnPropertyChanged(); Validate(); }
         }
 
+        /// Текст ошибки валидации.
         public string ErrorMessage
         {
             get => _errorMessage;
             set { _errorMessage = value; OnPropertyChanged(); }
         }
 
+        /// Доступность кнопки "Сохранить".
         public bool IsSaveEnabled
         {
             get => _isSaveEnabled;
             set { _isSaveEnabled = value; OnPropertyChanged(); }
         }
 
+        /// Текстовое представление среднего балла. Позволяет вводить точку или запятую.
+        /// При изменении вызывает валидацию.
         public string AverageScoreText
         {
             get => _averageScoreText;
@@ -49,15 +57,17 @@ namespace StudentAccounting.ViewModels
             {
                 _averageScoreText = value;
                 OnPropertyChanged();
-                Validate(); // при каждом изменении текста проверка
+                Validate();
             }
         }
 
         public ICommand SaveCommand { get; }
         public ICommand CancelCommand { get; }
 
+        /// Событие для закрытия окна.
         public event Action<bool?> CloseRequest;
 
+        /// Проверяет все поля и обновляет состояние кнопки.
         private void Validate()
         {
             // 1. ФИО
@@ -81,7 +91,7 @@ namespace StudentAccounting.ViewModels
                 IsSaveEnabled = false;
                 return;
             }
-            // 4. Средний балл
+            // 4. Средний балл (поддержка точки и запятой)
             double score;
             string scoreText = AverageScoreText.Replace(',', '.');
             if (!double.TryParse(scoreText, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out score))
@@ -104,7 +114,7 @@ namespace StudentAccounting.ViewModels
                 return;
             }
 
-            // проверки пройдены
+            // Все проверки пройдены
             Student.AverageScore = Math.Round(score, 1);
             ErrorMessage = "";
             IsSaveEnabled = true;

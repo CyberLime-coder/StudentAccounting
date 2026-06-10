@@ -8,22 +8,30 @@ using StudentAccounting.Models;
 
 namespace StudentAccounting.Services
 {
+    /// Реализация IDataService с хранением данных в JSON-файле.
+    /// При первом запуске создаёт пустой файл, при последующих загружает из него.
     public class JsonDataService : IDataService
     {
         private readonly string _filePath = "university_data.json";
-        private ObservableCollection<Student> _students = new ObservableCollection<Student>();
-        private ObservableCollection<Discipline> _disciplines = new ObservableCollection<Discipline>();
-        private int _nextStudentId = 1;
-        private int _nextDisciplineId = 1;
+        private ObservableCollection<Student> _students;
+        private ObservableCollection<Discipline> _disciplines;
+        private int _nextStudentId;
+        private int _nextDisciplineId;
 
-        public JsonDataService() => LoadData();
+        public JsonDataService()
+        {
+            _students = new ObservableCollection<Student>();
+            _disciplines = new ObservableCollection<Discipline>();
+            LoadData();
+        }
 
+        /// Загружает данные из JSON-файла или создаёт пустые коллекции.
         private void LoadData()
         {
             if (!File.Exists(_filePath))
             {
-                _students = new ObservableCollection<Student>();
-                _disciplines = new ObservableCollection<Discipline>();
+                _students.Clear();
+                _disciplines.Clear();
                 _nextStudentId = 1;
                 _nextDisciplineId = 1;
                 return;
@@ -41,8 +49,9 @@ namespace StudentAccounting.Services
                     _nextDisciplineId = _disciplines.Any() ? _disciplines.Max(d => d.Id) + 1 : 1;
                 }
             }
-            catch
+            catch (Exception)
             {
+                // При ошибке чтения создаём пустые коллекции
                 _students = new ObservableCollection<Student>();
                 _disciplines = new ObservableCollection<Discipline>();
                 _nextStudentId = 1;
@@ -50,6 +59,7 @@ namespace StudentAccounting.Services
             }
         }
 
+        /// Сохраняет текущее состояние в JSON-файл.
         private void SaveData()
         {
             var container = new DataContainer
@@ -68,7 +78,7 @@ namespace StudentAccounting.Services
         {
             student.Id = _nextStudentId++;
             _students.Add(student);
-            SaveChanges();
+            SaveData();
         }
 
         public void UpdateStudent(Student student)
@@ -81,7 +91,7 @@ namespace StudentAccounting.Services
                 existing.RecordBookNumber = student.RecordBookNumber;
                 existing.AverageScore = student.AverageScore;
                 existing.EducationForm = student.EducationForm;
-                SaveChanges();
+                SaveData();
             }
         }
 
@@ -91,7 +101,7 @@ namespace StudentAccounting.Services
             if (student != null)
             {
                 _students.Remove(student);
-                SaveChanges();
+                SaveData();
             }
         }
 
@@ -99,7 +109,7 @@ namespace StudentAccounting.Services
         {
             discipline.Id = _nextDisciplineId++;
             _disciplines.Add(discipline);
-            SaveChanges();
+            SaveData();
         }
 
         public void UpdateDiscipline(Discipline discipline)
@@ -111,7 +121,7 @@ namespace StudentAccounting.Services
                 existing.Hours = discipline.Hours;
                 existing.Semester = discipline.Semester;
                 existing.Teacher = discipline.Teacher;
-                SaveChanges();
+                SaveData();
             }
         }
 
@@ -121,12 +131,13 @@ namespace StudentAccounting.Services
             if (discipline != null)
             {
                 _disciplines.Remove(discipline);
-                SaveChanges();
+                SaveData();
             }
         }
 
         public void SaveChanges() => SaveData();
 
+        /// Вспомогательный класс для сериализации/десериализации.
         private class DataContainer
         {
             public List<Student> Students { get; set; } = new List<Student>();

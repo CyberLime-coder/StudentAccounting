@@ -8,6 +8,9 @@ using StudentAccounting.Commands;
 
 namespace StudentAccounting.ViewModels
 {
+    /// ViewModel главного окна. Содержит коллекции студентов и дисциплин,
+    /// выбранные элементы, команды для CRUD операций.
+
     public class MainViewModel : BaseViewModel
     {
         private readonly IDataService _dataService;
@@ -23,13 +26,13 @@ namespace StudentAccounting.ViewModels
             _disciplines = _dataService.GetDisciplines();
 
             AddStudentCommand = new RelayCommand(_ => OpenStudentEditDialog(null));
-            EditStudentCommand = new RelayCommand(_ => OpenStudentEditDialog(SelectedStudent), _ => SelectedStudent != null);
-            DeleteStudentCommand = new RelayCommand(_ => DeleteStudent(), _ => SelectedStudent != null);
+            EditStudentCommand = new RelayCommand(_ => OpenStudentEditDialog(_selectedStudent), _ => _selectedStudent != null);
+            DeleteStudentCommand = new RelayCommand(_ => DeleteStudent(), _ => _selectedStudent != null);
             RefreshStudentsCommand = new RelayCommand(_ => RefreshStudents());
 
             AddDisciplineCommand = new RelayCommand(_ => OpenDisciplineEditDialog(null));
-            EditDisciplineCommand = new RelayCommand(_ => OpenDisciplineEditDialog(SelectedDiscipline), _ => SelectedDiscipline != null);
-            DeleteDisciplineCommand = new RelayCommand(_ => DeleteDiscipline(), _ => SelectedDiscipline != null);
+            EditDisciplineCommand = new RelayCommand(_ => OpenDisciplineEditDialog(_selectedDiscipline), _ => _selectedDiscipline != null);
+            DeleteDisciplineCommand = new RelayCommand(_ => DeleteDiscipline(), _ => _selectedDiscipline != null);
             RefreshDisciplinesCommand = new RelayCommand(_ => RefreshDisciplines());
         }
 
@@ -57,16 +60,19 @@ namespace StudentAccounting.ViewModels
             set { _selectedDiscipline = value; OnPropertyChanged(); }
         }
 
+        // Команды для студентов
         public ICommand AddStudentCommand { get; }
         public ICommand EditStudentCommand { get; }
         public ICommand DeleteStudentCommand { get; }
         public ICommand RefreshStudentsCommand { get; }
 
+        // Команды для дисциплин
         public ICommand AddDisciplineCommand { get; }
         public ICommand EditDisciplineCommand { get; }
         public ICommand DeleteDisciplineCommand { get; }
         public ICommand RefreshDisciplinesCommand { get; }
 
+        /// Открывает диалог добавления/редактирования студента.
         private void OpenStudentEditDialog(Student student)
         {
             var dialog = new Views.StudentEditDialog(student?.Clone() as Student);
@@ -80,6 +86,7 @@ namespace StudentAccounting.ViewModels
             }
         }
 
+        /// Открывает диалог добавления/редактирования дисциплины.
         private void OpenDisciplineEditDialog(Discipline discipline)
         {
             var dialog = new Views.DisciplineEditDialog(discipline?.Clone() as Discipline);
@@ -93,6 +100,7 @@ namespace StudentAccounting.ViewModels
             }
         }
 
+        /// Удаляет выбранного студента после подтверждения.
         private void DeleteStudent()
         {
             if (SelectedStudent == null) return;
@@ -113,6 +121,7 @@ namespace StudentAccounting.ViewModels
             }
         }
 
+        /// Удаляет выбранную дисциплину после подтверждения.
         private void DeleteDiscipline()
         {
             if (SelectedDiscipline == null) return;
@@ -133,12 +142,14 @@ namespace StudentAccounting.ViewModels
             }
         }
 
+        /// Обновляет список студентов из сервиса.
         private void RefreshStudents()
         {
             Students = _dataService.GetStudents();
             OnPropertyChanged(nameof(Students));
         }
 
+        /// Обновляет список дисциплин из сервиса.
         private void RefreshDisciplines()
         {
             Disciplines = _dataService.GetDisciplines();
