@@ -4,27 +4,36 @@ using StudentAccounting.ViewModels;
 
 namespace StudentAccounting.Views
 {
-    /// Диалоговое окно для добавления или редактирования дисциплины
-    /// Принимает копию дисциплины.
-    /// Возвращает EditedDiscipline при успешном сохранении.
+    // Окно для добавления/редактирования дисциплины
     public partial class DisciplineEditDialog : Window
     {
-        /// Отредактированная дисциплина (null, если пользователь отменил).
+        // Свойство, в которое сохраняется отредактированная дисциплина
+        // (если пользователь нажал "Сохранить")
         public Discipline EditedDiscipline { get; private set; }
 
+        // Конструктор. Принимает дисциплину для редактирования (может быть null)
         public DisciplineEditDialog(Discipline discipline)
         {
-            InitializeComponent();
-            // Создание ViewModel, передающая клон исходной дисциплины
-            var vm = new DisciplineEditViewModel(discipline?.Clone() as Discipline);
-            // Подписываемся на событие закрытия от ViewModel
+            InitializeComponent(); // Обязательный вызов для загрузки XAML
+
+            // Создаём ViewModel для этого диалога
+            DisciplineEditViewModel vm = new DisciplineEditViewModel(discipline);
+
+            // Подписываемся на событие запроса закрытия от ViewModel
             vm.CloseRequest += (result) =>
             {
+                // Если результат true – пользователь подтвердил сохранение
                 if (result == true)
-                    EditedDiscipline = vm.Discipline;   // Сохранение отредактированной дисциплины
-                DialogResult = result;                  // Устанавливание результата диалога
-                Close();                                // Закрытие окна
+                    EditedDiscipline = vm.Discipline; // Сохраняем отредактированную дисциплину
+
+                // Устанавливаем результат диалога (true/false/null)
+                DialogResult = result;
+
+                // Закрываем окно
+                Close();
             };
+
+            // Устанавливаем DataContext окна, чтобы привязки в XAML работали с этой ViewModel
             DataContext = vm;
         }
     }

@@ -72,7 +72,7 @@ namespace StudentAccounting.Models
                 error = "ФИО не может быть пустым.";
                 return false;
             }
-            if (!Regex.IsMatch(Group, @"^[А-Я]{4}-\d{2}-\d{2}$"))
+            if (!Regex.IsMatch(Group, @"^[А-Яа-я]{3,4}-\d{2}-\d{2}$"))
             {
                 error = "Группа должна иметь формат ББББ-ЧЧ-ЧЧ (например ИСП-21-01).";
                 return false;
